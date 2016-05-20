@@ -87,7 +87,7 @@ class Path::Map does Associative {
     my $obj := Path::Map.bless;
     for @maps {
       when Pair {
-	$obj.add_handler(.key, .value);
+        $obj.add_handler(.key, .value);
       }
     }
 
@@ -103,13 +103,13 @@ class Path::Map does Associative {
 
     for $path.comb($componentrx, :match).list -> $/ {
       if $slurpy || ($<slurpy>:exists) {
-	$slurpy = True;
-	last;
+        $slurpy = True;
+        last;
       }
       my $p = $<path>.Str;
       if $<var>:exists {
-	push @vars, $p;
-	$p = ($/.Str => %constraints{$<path>} // { True });
+        push @vars, $p;
+        $p = ($/.Str => %constraints{$<path>} // { True });
       }
       $mapper{$p} = Path::Map.new unless $mapper{$p}:exists;
       $mapper{$p}.key = $<path>.Str if $<var>:exists;
@@ -152,10 +152,10 @@ segment.
 
   # Looks up a path by array of segments
   multi method lookup(Path::Map:D $mapper:
-		      @components is copy,
-		      %variables  is copy = {},
-		      @values     is copy = [],
-		      $value?) {
+                      @components is copy,
+                      %variables  is copy = {},
+                      @values     is copy = [],
+                      $value?) {
     # Add value to segment variables and values if component is a named key
     if $!key {
       %variables{$!key} = $value;
@@ -167,17 +167,17 @@ segment.
       my $c = @components[0];
       # Resolve and loop through child segment mappers.
       if $mapper{$c}:exists {
-	my @maps = $mapper{$c};
+        my @maps = $mapper{$c};
 
-	for @maps -> $map {
-	  # Lookup by stripping out the zeroeth component & return the first successful match.
-	  if my $match = $map.lookup(@components[1..*], %variables, @values, $c) {
-	    return $match
-	  };
-	}
+        for @maps -> $map {
+          # Lookup by stripping out the zeroeth component & return the first successful match.
+          if my $match = $map.lookup(@components[1..*], %variables, @values, $c) {
+            return $match
+          };
+        }
       } else {
-	# Only allow continuations for slurpy matches.
-	return Nil unless $!slurpy;
+        # Only allow continuations for slurpy matches.
+        return Nil unless $!slurpy;
       }
     }
 
@@ -222,7 +222,7 @@ The two main methods on the match object are:
   }
 
   # Associate callbacks.  The variants with Pair $keys may be prunable.
-  
+
   multi method EXISTS-KEY(Pair $key) {
     %!map{$key.key}:exists;
   }
@@ -276,7 +276,7 @@ module.  Please do not contact Matt with issues with the Perl 6 module.
 =head1 COPYRIGHT
 
 This library is free software; you can redistribute it and/or modify it under
-the terms of the 
+the terms of the
 L<Artistic License 2.0|http://www.perlfoundation.org/artistic_license_2_0>
 
 =end pod
