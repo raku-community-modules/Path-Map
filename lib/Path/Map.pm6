@@ -36,8 +36,8 @@ use v6;
     Note that the handlers being mapped to can be any arbitrary data, not just
     strings as illustrated in the synopsis.
 
-    This is a port of the Perl 5 module of the same name by Matt Lawrence, see
-    L<Path::Map|https://metacpan.org/pod/Path::Map>
+    This is a functional port of the Perl 5 module of the same name by Matt
+    Lawrence, see L<Path::Map|https://metacpan.org/pod/Path::Map>.
 
 =head2 Implementation
 
@@ -270,8 +270,8 @@ L<Francis Whittle|mailto:fj.whittle@gmail.com>
 
 =head1 KUDOS
 
-L<Matt Lawrence|mailto:mattlaw@cpan.org> - author of Perl 5 
-L<Path::Map|https://metacpan.org/pod/Path::Map> module.
+Matt Lawrence - author of Perl 5 L<Path::Map|https://metacpan.org/pod/Path::Map>
+module.  Please do not contact Matt with issues with the Perl 6 module.
 
 =head1 COPYRIGHT
 
