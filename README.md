@@ -31,8 +31,7 @@ DESCRIPTION
     This class maps paths to handlers. The paths can contain variable path
     segments, which match against any incoming path segment, where the matching
     segments are saved as named variables for later retrieval.  Simple
-    validation may be added to any named segment in the form of a
-    L<doc:Callable>.
+    validation may be added to any named segment in the form of a *Callable*
 
     Note that the handlers being mapped to can be any arbitrary data, not just
     strings as illustrated in the synopsis.
@@ -62,7 +61,7 @@ method new(
 ) returns Mu
 ```
 
-The constructor. Takes a list of pairs and adds each via L<#add_handler>
+The constructor. Takes a list of pairs and adds each via [add_handler](#method-add_handler)
 
 ### method add_handler
 
@@ -101,18 +100,18 @@ method lookup(
 ) returns Mu
 ```
 
-Returns a L<Path::Map::Match> object if the path matches a known template.
+Returns a *Path::Map::Match* object if the path matches a known template.
 
 The two main methods on the match object are:
 
   * handler
 
     The handler that was matched, identical to whatever was originally passed to
-    L<#add_handler>.
+    [add_handler](#method-add_handler).
 
   * variables
 
-    The named path variables as a L<doc:Hash>.
+    The named path variables as a *Hash*.
 
 ### method handlers
 
