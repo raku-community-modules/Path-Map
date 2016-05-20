@@ -19,7 +19,7 @@ my $componentrx = /
 class Path::Map does Associative {
   has %.map handles <DELETE-KEY keys values pairs kv>;
 
-  has @.resolv;
+  has @!resolv;
 
   has $.target is rw;
   has $.key is rw;
