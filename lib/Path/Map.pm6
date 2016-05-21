@@ -85,7 +85,7 @@ class Path::Map does Associative {
   #| The constructor.  Takes a list of pairs and adds each via L<#add_handler>
   method new(Path::Map:U: *@maps) {
     my $obj := Path::Map.bless;
-    for @maps {
+    @maps and do for @maps {
       when Pair {
         $obj.add_handler(.key, .value);
       }
@@ -204,12 +204,14 @@ key.
       if $mapper{$c}:exists {
         my @maps = $mapper{$c};
 
-        for @maps -> $map {
-          # Lookup by stripping out the zeroeth component & return the first successful match.
-          if my $match = $map.lookup(@components[1..*], %variables, @values, $c) {
-            return $match
-          };
-        }
+        my @results = await @maps.map: -> $map {
+          start {
+            # Lookup by stripping out the zeroeth component & return the first successful match.
+            $map.lookup(@components[1..*], %variables, @values, $c);
+          }
+        };
+
+        @results = @results.grep({$_}) and return @results.first;
       } else {
         # Only allow continuations for slurpy matches.
         return Nil unless $!slurpy;
