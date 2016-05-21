@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fjwhittle/p6-Path-Map.svg?branch=master)](https://travis-ci.org/fjwhittle/p6-Path-Map)
+
 NAME
 ====
 
@@ -6,7 +8,7 @@ Path::Map - map paths to handlers
 SYNOPSIS
 ========
 
-```
+```perl6
     my $mapper = Path::Map.new(
         '/x/y/z' => 'XYZ',
         '/a/b/c' => 'ABC',
@@ -57,7 +59,7 @@ METHODS
 
 ### method new
 
-```
+```perl6
 method new(
     *@maps
 ) returns Mu
@@ -67,7 +69,7 @@ The constructor. Takes a list of pairs and adds each via [add_handler](#method-a
 
 ### method add_handler
 
-```
+```perl6
 method add_handler(
     Str $path, 
     $handler, 
@@ -89,28 +91,28 @@ For example, these are all identical path templates:
 
 The order in which templates are added will affect the lookup only when a named segment has differing keys, Thus:
 
-```
+```perl6
 	$map.add_handler('foo/:foo/bar', 'A');
     $map.add_handler('foo/:foo/baz', 'B');
 ```
 
 produces the same tree as:
 
-```
+```perl6
 	$map.add_handler('foo/:foo/baz', 'B');
     $map.add_handler('foo/:foo/bar', 'A');
 ```
 	
 however:
 
-```
+```perl6
 	$map.add_handler('foo/:bar/baz', 'A');
     $map.add_handler('foo/:ban/baz', 'B');
 ```
 
 will always resolve 'foo/*/baz' to 'A', and:
 
-```
+```perl6
 	$map.add_handler('foo/:ban/baz', 'B');
     $map.add_handler('foo/:bar/baz', 'A');
 ```
@@ -119,7 +121,7 @@ will always resolve 'foo/*/baz; to 'B'.
 
 Templates containing a segment consisting entirely of `'*'` match instantly at that point, with all remaining segments assigned to the `values` of the match as normal, but without any variable names. Any remaining segments in the template are ignored, so it only makes sense for the wildcard to be the last segment.
 
-```
+```perl6
 	my $map = Path::Map.new('foo/:foo/*', 'Something');
     my match = $map.lookup('foo/bar/baz/qux');
     $match.variables; # (foo => 'bar')
@@ -128,7 +130,7 @@ Templates containing a segment consisting entirely of `'*'` match instantly at t
 
 Additional named arguments passed to `add_handler` validate the named nariables in the path specification with the corresponding key using a `Callable`; this will be called with the value of the segment as the only argument, and should return a `True` or `False` response. No exception handling is performed by the `lookup` method, so any Exceptions or Failures are liable to prevent further lookups on alternative paths, Multiple constraints for the same segment may be used with different constraints, provided each handler uses a different key.
 
-```
+```perl6
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
     $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
     $match = $map.lookup('foo/42'); # .handler eq 'Something even';
@@ -138,7 +140,7 @@ Additional named arguments passed to `add_handler` validate the named nariables 
 
 ### method lookup
 
-```
+```perl6
 method lookup(
     Str $path
 ) returns Mu
@@ -159,7 +161,7 @@ The two main methods on the match object are:
 
 ### method handlers
 
-```
+```perl6
 method handlers() returns Mu
 ```
 
