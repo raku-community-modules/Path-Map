@@ -2,12 +2,12 @@
   "name"        : "Path::Map",
   "version"     : "0.1",
   "description" : "Hash tree based path router",
+  "perl"        : "6.c",
   "auth"        : "github:fjwhittle",
   "depends"     : [ ],
   "test-depends": [ ],
   "provides"    : {
-    "Path::Map"       : "lib/Path/Map.pm6"
-    "Path::Map::Match": "lib/Path/Map.pm6"
+    "Path::Map": "lib/Path/Map.pm6"
   },
   "source-url"  : "git://github.com/fjwhittle/p6-Path-Map.git"
 }
