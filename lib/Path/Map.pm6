@@ -134,8 +134,28 @@ For example, these are all identical path templates:
     a/:var/b/
     //a//:var//b//
 
-The order in which these templates are added has no bearing on the lookup,
-except that later additions with identical templates overwrite earlier ones.
+The order in which templates are added will affect the lookup only when a named
+segment has differing keys, Thus:
+
+    $map.add_handler('foo/:foo/bar', 'A');
+    $map.add_handler('foo/:foo/baz', 'B');
+
+produces the same tree as:
+
+    $map.add_handler('foo/:foo/baz', 'B');
+    $map.add_handler('foo/:foo/bar', 'A');
+
+however:
+
+    $map.add_handler('foo/:bar/baz', 'A');
+    $map.add_handler('foo/:ban/baz', 'B');
+
+will always resolve 'foo/*/baz' to 'A', and:
+
+    $map.add_handler('foo/:ban/baz', 'B');
+    $map.add_handler('foo/:bar/baz', 'A');
+
+will always resolve 'foo/*/baz; to 'B'.
 
 Templates containing a segment consisting entirely of C<'*'> match instantly
 at that point, with all remaining segments assigned to the C<values> of the
@@ -149,9 +169,13 @@ segment.
     $match.values; # (bar baz qux)
 
 Additional named arguments passed to C<add_handler> validate the named nariables
-in the path specification with the corresponding key using a C<Callable>. This
-can allow multiple handlers for the same path pattern with different
-constraints, provided each handler uses a different key.
+in the path specification with the corresponding key using a C<Callable>; this
+will be called with the value of the segment as the only argument, and should
+return a C<True> or C<False> response.  No exception handling is performed by
+the C<lookup> method, so any Exceptions or Failures are liable to prevent
+further lookups on alternative paths, Multiple constraints for the same segment
+may be used with different constraints, provided each handler uses a different
+key.
 
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
     $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
