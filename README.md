@@ -18,12 +18,12 @@ SYNOPSIS
     );
 
     if my $match = $mapper.lookup('/date/2013/12/25') {
-        # $match->handler is 'Date'
-        # $match->variables is { year => 2012, month => 12, day => 25 }
+        # $match.handler is 'Date'
+        # $match.variables is ( year => 2012, month => 12, day => 25 )
     }
 
     # Add more mappings later
-    $mapper->add_handler($path => $target)
+    $mapper.add_handler(Str $path, Mu $target, :key(Callable $constraint), ...)
 
 DESCRIPTION
 ===========
@@ -91,6 +91,14 @@ Templates containing a segment consisting entirely of `'*'` match instantly at t
     my match = $map.lookup('foo/bar/baz/qux');
     $match.variables; # (foo => 'bar')
     $match.values; # (bar baz qux)
+
+Additional named arguments passed to `add_handler` validate the named nariables in the path specification with the corresponding key using a `Callable`. This can allow multiple handlers for the same path pattern with different constraints, provided each handler uses a different key.
+
+    $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
+    $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
+    $match = $map.lookup('foo/42'); # .handler eq 'Something even';
+    $match = $map.lookup('foo/21'); # fails validation; .handler eq 'Something';
+    $match = $map.lookup('foo/seven'); # fails validation; returns Nil;
 
 ### method lookup
 
