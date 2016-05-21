@@ -128,7 +128,7 @@ Templates containing a segment consisting entirely of `'*'` match instantly at t
     $match.values; # (bar baz qux)
 ```
 
-Additional named arguments passed to `add_handler` validate the named nariables in the path specification with the corresponding key using a `Callable`; this will be called with the value of the segment as the only argument, and should return a `True` or `False` response. No exception handling is performed by the `lookup` method, so any Exceptions or Failures are liable to prevent further lookups on alternative paths, Multiple constraints for the same segment may be used with different constraints, provided each handler uses a different key.
+Additional named arguments passed to `add_handler` validate the named nariables in the path specification with the corresponding key using a `Callable`; this will be called with the value of the segment as the only argument, and should return a `True` or `False` response. No exception handling is performed by the `lookup` method, so any Exceptions or Failures are liable to prevent further lookups on alternative paths. Multiple constraints for the same segment may be used with different constraints, provided each handler uses a different key.
 
 ```perl6
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));

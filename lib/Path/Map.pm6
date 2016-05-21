@@ -173,7 +173,7 @@ in the path specification with the corresponding key using a C<Callable>; this
 will be called with the value of the segment as the only argument, and should
 return a C<True> or C<False> response.  No exception handling is performed by
 the C<lookup> method, so any Exceptions or Failures are liable to prevent
-further lookups on alternative paths, Multiple constraints for the same segment
+further lookups on alternative paths. Multiple constraints for the same segment
 may be used with different constraints, provided each handler uses a different
 key.
 
