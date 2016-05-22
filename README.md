@@ -32,27 +32,16 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-    This class maps paths to handlers. The paths can contain variable path
-    segments, which match against any incoming path segment, where the matching
-    segments are saved as named variables for later retrieval.  Simple
-    validation may be added to any named segment in the form of a *Callable*
+This class maps paths to handlers. The paths can contain variable path segments, which match against any incoming path segment, where the matching segments are saved as named variables for later retrieval. Simple validation may be added to any named segment in the form of a [doc:Callable](doc:Callable).
 
-    Note that the handlers being mapped to can be any arbitrary data, not just
-    strings as illustrated in the synopsis.
+Note that the handlers being mapped to can be any arbitrary data, not just strings as illustrated in the synopsis.
 
-    This is a functional port of the Perl 5 module of the same name by Matt
-    Lawrence, see https://metacpan.org/pod/Path::Map.
+This is a functional port of the Perl 5 module of the same name by Matt Lawrence, see [Path::Map](https://metacpan.org/pod/Path::Map).
 
 Implementation
 --------------
 
-    Path::Map uses hash trees to do lookups, with the goal of producing a fast
-    and lightweight routing implementation.  No performance testing has been
-    done on the Perl 6 version at this stage, however this should in theory mean
-    that performance does not degrade significantly when a large number of
-    branches are added to a router at the same depth, and that the order in which
-    routes are added will not need to consider the frequency of lookup for a
-    particular path.
+Path::Map uses hash trees to do look-ups, with the goal of producing a fast and lightweight routing implementation. No performance testing has been done on the Perl 6 version at this stage, however this should in theory mean that performance does not degrade significantly when a large number of branches are added to a router at the same depth, and that the order in which routes are added will not need to consider the frequency of lookup for a particular path.
 
 METHODS
 =======
@@ -84,7 +73,7 @@ The path template should be a string comprising slash-delimited path segments, w
 For example, these are all identical path templates:
 
 ```
-	/a/:var/b
+    /a/:var/b
     a/:var/b/
     //a//:var//b//
 ```
@@ -92,28 +81,28 @@ For example, these are all identical path templates:
 The order in which templates are added will affect the lookup only when a named segment has differing keys, Thus:
 
 ```perl6
-	$map.add_handler('foo/:foo/bar', 'A');
+    $map.add_handler('foo/:foo/bar', 'A');
     $map.add_handler('foo/:foo/baz', 'B');
 ```
 
 produces the same tree as:
 
 ```perl6
-	$map.add_handler('foo/:foo/baz', 'B');
+    $map.add_handler('foo/:foo/baz', 'B');
     $map.add_handler('foo/:foo/bar', 'A');
 ```
-	
+
 however:
 
 ```perl6
-	$map.add_handler('foo/:bar/baz', 'A');
+    $map.add_handler('foo/:bar/baz', 'A');
     $map.add_handler('foo/:ban/baz', 'B');
 ```
 
 will always resolve 'foo/*/baz' to 'A', and:
 
 ```perl6
-	$map.add_handler('foo/:ban/baz', 'B');
+    $map.add_handler('foo/:ban/baz', 'B');
     $map.add_handler('foo/:bar/baz', 'A');
 ```
 
@@ -122,21 +111,21 @@ will always resolve 'foo/*/baz; to 'B'.
 Templates containing a segment consisting entirely of `'*'` match instantly at that point, with all remaining segments assigned to the `values` of the match as normal, but without any variable names. Any remaining segments in the template are ignored, so it only makes sense for the wildcard to be the last segment.
 
 ```perl6
-	my $map = Path::Map.new('foo/:foo/*', 'Something');
+    my $map = Path::Map.new('foo/:foo/*', 'Something');
     my match = $map.lookup('foo/bar/baz/qux');
     $match.variables; # (foo => 'bar')
     $match.values; # (bar baz qux)
 ```
 
-Additional named arguments passed to `add_handler` validate the named nariables in the path specification with the corresponding key using a `Callable`; this will be called with the value of the segment as the only argument, and should return a `True` or `False` response. No exception handling is performed by the `lookup` method, so any Exceptions or Failures are liable to prevent further lookups on alternative paths. Multiple constraints for the same segment may be used with different constraints, provided each handler uses a different key.
+Additional named arguments passed to `add_handler` validate the named variables in the path specification with the corresponding key using a `Callable`; this will be called with the value of the segment as the only argument, and should return a `True` or `False` response. No exception handling is performed by the `lookup` method, so any Exceptions or Failures are liable to prevent further look-ups on alternative paths. Multiple constraints for the same segment may be used with different constraints, provided each handler uses a different key.
 
 ```perl6
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
     $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
-    $match = $map.lookup('foo/42'); # .handler eq 'Something even';
-    $match = $map.lookup('foo/21'); # fails validation; .handler eq 'Something';
-    $match = $map.lookup('foo/seven'); # fails validation; returns Nil;
 ```
+    $match = $map.lookup('foo/42'); # succeeds first validation; .handler eq 'Something even';
+    $match = $map.lookup('foo/21'); # succeeds second validation; .handler eq 'Something odd';
+    $match = $map.lookup('foo/seven'); # fails all validation; returns Nil;
 
 ### method lookup
 
@@ -146,7 +135,7 @@ method lookup(
 ) returns Mu
 ```
 
-Returns a *Path::Map::Match* object if the path matches a known template.
+Returns a `Path::Map::Match` object if the path matches a known template.
 
 The two main methods on the match object are:
 
@@ -157,7 +146,7 @@ The two main methods on the match object are:
 
   * variables
 
-    The named path variables as a *Hash*.
+    The named path variables as a `Hash`.
 
 ### method handlers
 
@@ -170,7 +159,7 @@ Returns all of the handlers in no particular order.
 SEE ALSO
 ========
 
-[Path::Router](Path::Router), [Path::Map](https://metacpan.org/pod/Path::Map) for Perl 5
+[Path::Router](http://modules.perl6.org/dist/Path::Router), [Path::Map](https://metacpan.org/pod/Path::Map) for Perl 5
 
 AUTHOR
 ======

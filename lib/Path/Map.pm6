@@ -27,27 +27,27 @@ use v6;
 
 =begin DESCRIPTION
 
-    This class maps paths to handlers. The paths can contain variable path
-    segments, which match against any incoming path segment, where the matching
-    segments are saved as named variables for later retrieval.  Simple
-    validation may be added to any named segment in the form of a
-    L<doc:Callable>.
+This class maps paths to handlers. The paths can contain variable path
+segments, which match against any incoming path segment, where the matching
+segments are saved as named variables for later retrieval.  Simple
+validation may be added to any named segment in the form of a
+L<doc:Callable>.
 
-    Note that the handlers being mapped to can be any arbitrary data, not just
-    strings as illustrated in the synopsis.
+Note that the handlers being mapped to can be any arbitrary data, not just
+strings as illustrated in the synopsis.
 
-    This is a functional port of the Perl 5 module of the same name by Matt
-    Lawrence, see L<Path::Map|https://metacpan.org/pod/Path::Map>.
+This is a functional port of the Perl 5 module of the same name by Matt
+Lawrence, see L<Path::Map|https://metacpan.org/pod/Path::Map>.
 
 =head2 Implementation
 
-    Path::Map uses hash trees to do lookups, with the goal of producing a fast
-    and lightweight routing implementation.  No performance testing has been
-    done on the Perl 6 version at this stage, however this should in theory mean
-    that performance does not degrade significantly when a large number of
-    branches are added to a router at the same depth, and that the order in which
-    routes are added will not need to consider the frequency of lookup for a
-    particular path.
+Path::Map uses hash trees to do look-ups, with the goal of producing a fast
+and lightweight routing implementation.  No performance testing has been
+done on the Perl 6 version at this stage, however this should in theory mean
+that performance does not degrade significantly when a large number of
+branches are added to a router at the same depth, and that the order in which
+routes are added will not need to consider the frequency of lookup for a
+particular path.
 
 =end DESCRIPTION
 
@@ -168,20 +168,20 @@ segment.
     $match.variables; # (foo => 'bar')
     $match.values; # (bar baz qux)
 
-Additional named arguments passed to C<add_handler> validate the named nariables
+Additional named arguments passed to C<add_handler> validate the named variables
 in the path specification with the corresponding key using a C<Callable>; this
 will be called with the value of the segment as the only argument, and should
 return a C<True> or C<False> response.  No exception handling is performed by
 the C<lookup> method, so any Exceptions or Failures are liable to prevent
-further lookups on alternative paths. Multiple constraints for the same segment
+further look-ups on alternative paths. Multiple constraints for the same segment
 may be used with different constraints, provided each handler uses a different
 key.
 
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
     $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
-    $match = $map.lookup('foo/42'); # .handler eq 'Something even';
-    $match = $map.lookup('foo/21'); # fails validation; .handler eq 'Something';
-    $match = $map.lookup('foo/seven'); # fails validation; returns Nil;
+    $match = $map.lookup('foo/42'); # succeeds first validation; .handler eq 'Something even';
+    $match = $map.lookup('foo/21'); # succeeds second validation; .handler eq 'Something odd';
+    $match = $map.lookup('foo/seven'); # fails all validation; returns Nil;
 
 =end pod
 
