@@ -204,14 +204,14 @@ key.
       if $mapper{$c}:exists {
         my @maps = $mapper{$c};
 
-        my @results = await @maps.map: -> $map {
+        for @maps.map: -> $map {
           start {
             # Lookup by stripping out the zeroeth component & return the first successful match.
             $map.lookup(@components[1..*], %variables, @values, $c);
           }
-        };
-
-        @results = @results.grep({$_}) and return @results.first;
+        } -> $promise {
+          my $result = await $promise and return $result;
+        }
       } else {
         # Only allow continuations for slurpy matches.
         return Nil unless $!slurpy;
