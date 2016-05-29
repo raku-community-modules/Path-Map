@@ -27,11 +27,10 @@ use v6;
 
 =begin DESCRIPTION
 
-This class maps paths to handlers. The paths can contain variable path
-segments, which match against any incoming path segment, where the matching
-segments are saved as named variables for later retrieval.  Simple
-validation may be added to any named segment in the form of a
-L<doc:Callable>.
+This class maps (or "routes") paths to handlers. The paths can contain variable
+path segments, which match against any incoming path segment, where the matching
+segments are saved as named variables for later retrieval.  Simple validation
+may be added to any named segment in the form of a C<Callable>.
 
 Note that the handlers being mapped to can be any arbitrary data, not just
 strings as illustrated in the synopsis.
@@ -55,11 +54,12 @@ class Path::Map { ... }
 
 # Match class for lookup results.
 class Path::Map::Match {
-  has Path::Map $.mapper is required;
-  has @.values;
-  has %.variables;
+  has Path::Map $.mapper is required; # The final mapper that produced this match
+  has @.values; # Path segment values and leftover segments
+  has %.variables; # Variables resolved by the lookup.
 
-  method handler() {
+  # Returns the target handler
+  method handler {
     $!mapper.target;
   }
 }
@@ -150,12 +150,12 @@ however:
     $map.add_handler('foo/:bar/baz', 'A');
     $map.add_handler('foo/:ban/baz', 'B');
 
-will always resolve 'foo/*/baz' to 'A', and:
+will always resolve C<'foo/*/baz'> to C<'A'>, and:
 
     $map.add_handler('foo/:ban/baz', 'B');
     $map.add_handler('foo/:bar/baz', 'A');
 
-will always resolve 'foo/*/baz; to 'B'.
+will always resolve C<'foo/*/baz'>; to C<'B'>.
 
 Templates containing a segment consisting entirely of C<'*'> match instantly
 at that point, with all remaining segments assigned to the C<values> of the
@@ -228,14 +228,14 @@ key.
     Path::Map::Match.new(:$mapper, :%variables, :@values);
   }
 
-  #| Returns a L<Path::Map::Match> object if the path matches a known template.
+  #| Returns a C<Path::Map::Match> object if the path matches a known template.
   multi method lookup(Str $path) {
     self.lookup($path.comb(/<-[/]>+/).Array);
   }
 
 =begin pod
 
-The two main methods on the match object are:
+The two main methods on the C<Path::Map::Match> object are:
 
 =item handler
 
@@ -244,7 +244,10 @@ The two main methods on the match object are:
 
 =item variables
 
-    The named path variables as a L<doc:Hash>.
+    The named path variables as a C<Hash>.
+
+The C<mapper> that matched the path and associated C<values> are also accessible
+as methods of the C<Path::Map::Match> object.
 
 =end pod
 
@@ -258,7 +261,7 @@ The two main methods on the match object are:
     @!resolv.grep({ $^p.value.($key) })».key;
   }
 
-  # Associate callbacks.  The variants with Pair $keys may be prunable.
+  # Associative callbacks.
 
   multi method EXISTS-KEY(Pair $key) {
     %!map{$key.key}:exists;

@@ -32,7 +32,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-This class maps paths to handlers. The paths can contain variable path segments, which match against any incoming path segment, where the matching segments are saved as named variables for later retrieval. Simple validation may be added to any named segment in the form of a [doc:Callable](doc:Callable).
+This class maps (or "routes") paths to handlers. The paths can contain variable path segments, which match against any incoming path segment, where the matching segments are saved as named variables for later retrieval. Simple validation may be added to any named segment in the form of a `Callable`.
 
 Note that the handlers being mapped to can be any arbitrary data, not just strings as illustrated in the synopsis.
 
@@ -99,14 +99,14 @@ however:
     $map.add_handler('foo/:ban/baz', 'B');
 ```
 
-will always resolve 'foo/*/baz' to 'A', and:
+will always resolve `'foo/*/baz'` to `'A'`, and:
 
 ```perl6
     $map.add_handler('foo/:ban/baz', 'B');
     $map.add_handler('foo/:bar/baz', 'A');
 ```
 
-will always resolve 'foo/*/baz; to 'B'.
+will always resolve `'foo/*/baz'`; to `'B'`.
 
 Templates containing a segment consisting entirely of `'*'` match instantly at that point, with all remaining segments assigned to the `values` of the match as normal, but without any variable names. Any remaining segments in the template are ignored, so it only makes sense for the wildcard to be the last segment.
 
@@ -137,7 +137,7 @@ method lookup(
 
 Returns a `Path::Map::Match` object if the path matches a known template.
 
-The two main methods on the match object are:
+The two main methods on the `Path::Map::Match` object are:
 
   * handler
 
@@ -147,6 +147,8 @@ The two main methods on the match object are:
   * variables
 
     The named path variables as a `Hash`.
+
+The `mapper` that matched the path and associated `values` are also accessible as methods of the `Path::Map::Match` object.
 
 ### method handlers
 
