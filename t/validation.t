@@ -3,7 +3,7 @@ use v6;
 use Test;
 use Path::Map;
 
-plan 8;
+plan 9;
 
 my $mapper = Path::Map.new;
 
@@ -37,3 +37,7 @@ ok $mapper.lookup('foo/hello-perl6').?handler ~~ 'Regex Constrained',
 
 ok $mapper.lookup('foo/hello-wombat').?handler ~~ 'Wildcard',
   q{lookup('foo/hello-wombat') fell through to Wildcard.};
+
+$mapper.add_handler('pony/:breed', 'Magical', :breed( -> $breed is rw { $breed = :unicorn«$breed»; }));
+
+ok $mapper.lookup('pony/Newfoundland').variables<breed> ~~ :unicorn<Newfoundland>, 'Pony converted to unicorn.';

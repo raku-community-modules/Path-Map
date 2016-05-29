@@ -71,10 +71,14 @@ my $componentrx = /
 
 class Path::Map does Associative {
   # Hash providing storage of defined segments
-  has %.map handles <DELETE-KEY keys values pairs kv>;
+  has %.map handles <keys values pairs kv>;
 
   # Array mapping resolvers & validators to path segments
   has @!resolv;
+  has %!dyncache;
+
+  # Cache holding variables modified by constraints.
+  has %!vcache;
 
   has $.target is rw; #= Target / handler for this mapper.
   has $.key is rw; #= Key for named segments
@@ -183,6 +187,13 @@ key.
     $match = $map.lookup('foo/21'); # succeeds second validation; .handler eq 'Something odd';
     $match = $map.lookup('foo/seven'); # fails all validation; returns Nil;
 
+Validation blocks can specify their (single) argument as rw to allow the mapped
+value to be transformed during validation:
+
+    $map.add_handler('foo/:bar', 'Transform!', :bar(-> $bar is rw { try { $bar = Int($bar) } }));
+    $map.lookup('foo/42').variables<bar>; # Int
+    $map.lookup('foo/qux'); # Does not validate; Nil
+
 =end pod
 
   # Looks up a path by array of segments
@@ -200,14 +211,13 @@ key.
     # Descend into segment
     if @components {
       my $c = @components[0];
+
       # Resolve and loop through child segment mappers.
       if $mapper{$c}:exists {
-        my @maps = $mapper{$c};
-
-        for @maps.map: -> $map {
+        for @($mapper{$c}).map: -> $map {
           start {
             # Lookup by stripping out the zeroeth component & return the first successful match.
-            $map.lookup(@components[1..*], %variables, @values, $c);
+            $map.lookup(@components[1..*], %variables, @values, %!vcache{$map}{$c});
           }
         } -> $promise {
           my $result = await $promise and return $result;
@@ -258,30 +268,32 @@ as methods of the C<Path::Map::Match> object.
 
   # Resolves and Validates named keys.
   method !dynamic($key) {
-    @!resolv.grep({ $^p.value.($key) })».key;
+    @!resolv.grep( -> $p {
+      %!dyncache{$p.WHERE}{$key} //= ($p.value.(%!vcache{%!map{$p.gist}}{$key} = $key) || False);
+    })».gist;
   }
 
   # Associative callbacks.
 
   multi method EXISTS-KEY(Pair $key) {
-    %!map{$key.key}:exists;
+    %!map{$key.gist}:exists;
   }
 
   multi method EXISTS-KEY($key) {
     quietly { %!map{$key | self!dynamic($key).any }:exists }
   }
 
-  multi method AT-KEY(Pair $key) {
-    %!map{$key.key};
+  multi method AT-KEY(Path::Map:D: Pair $key) {
+    %!map{$key.gist};
   }
 
-  multi method AT-KEY($key) {
-    %!map{$key} // %!map{self!dynamic($key).list} || Nil;
+  multi method AT-KEY(Path::Map:D: $key) {
+    %!map{$key} // %!map{self!dynamic($key)} || Nil;
   }
 
   multi method ASSIGN-KEY(Pair $key, $new) {
     @!resolv.push: $key;
-    %!map{$key.key} = $new;
+    %!map{$key.gist} = $new;
   }
 
   multi method ASSIGN-KEY($key, $new) {
@@ -290,11 +302,15 @@ as methods of the C<Path::Map::Match> object.
 
   multi method BIND-KEY(Pair $key, \new) {
     @!resolv.push: $key;
-    %!map{$key.key} := new;
+    %!map{$key.gist} := new;
   }
 
   multi method BIND-KEY($key, \new) {
     %!map{$key} := new;
+  }
+
+  multi method DELETE-KEY(Path::Map:D: $key) {
+    %!map{$key}:delete;
   }
 }
 

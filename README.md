@@ -127,6 +127,12 @@ Additional named arguments passed to `add_handler` validate the named variables 
     $match = $map.lookup('foo/21'); # succeeds second validation; .handler eq 'Something odd';
     $match = $map.lookup('foo/seven'); # fails all validation; returns Nil;
 
+Validation blocks can specify their (single) argument as rw to allow the mapped value to be transformed during validation:
+
+    $map.add_handler('foo/:bar', 'Transform!', :bar(-> $bar is rw { try { $bar = Int($bar) } }));
+    $map.lookup('foo/42').variables<bar>; # Int
+    $map.lookup('foo/qux'); # Does not validate; Nil
+
 ### method lookup
 
 ```perl6
