@@ -333,6 +333,55 @@ C<variables> will be passed to the handler.
   multi method DELETE-KEY(Path::Map:D: $key) {
     %!map{$key}:delete;
   }
+
+  my Path::Map %pool;
+
+  # Associative lookup on Path::Map class returns a mapper from the pool
+  multi method AT-KEY(Path::Map:U: $key) {
+    %pool{$key};
+  }
+
+  # Trait mod for allowing code definitions with is Path::Map(:type<path/to/map>)
+  multi trait_mod:<is> (Code:D $handler, Path::Map, Pair $binding where .key & .value ~~ Str) is export(:traits) {
+    my %constraints = $handler.signature.params.grep({ so .named }).map: -> $param {
+      # Strip the sigil.
+      $param.name.substr(1) => -> $var is rw {
+	try {
+	  $var = $param.type.($var) unless (Any ~~ $param.type);
+	  $var ~~ $param.constraints
+	}
+      }
+    };
+
+    (%pool{$binding.key} //= Path::Map.new()).add_handler($binding.value, $handler, |%constraints);
+  }
+
+=begin pod
+
+=head1 TRAITS
+
+When C<use>ing Path::Map with :traits you may specify a C<Code> block as
+C<is Path::Map(:type<path/to/map>)> and it will be stored as a mapping in the
+C<Path::Map> namespace.  This will try to use the type constraints from any
+parameter definitions:
+
+=begin code
+
+    use Path::Map :traits;
+
+    sub handle_things(Int :$baz) is Path::Map(:foo<bar/:baz>) { ... };
+
+    ...
+
+    use Path::Map;
+
+    Path::Map<foo>.lookup('bar/100').handler; # handle_things
+    Path::Map<foo>.lookup('bar/qux').handler; # Nil
+
+=end code
+
+=end pod
+
 }
 
 =begin pod

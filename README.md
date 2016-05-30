@@ -168,6 +168,24 @@ method handlers() returns Mu
 
 Returns all of the handlers in no particular order.
 
+TRAITS
+======
+
+When `use`ing Path::Map with :traits you may specify a `Code` block as `is Path::Map(:type<path/to/map>)` and it will be stored as a mapping in the `Path::Map` namespace. This will try to use the type constraints from any parameter definitions:
+
+```perl6
+        use Path::Map :traits;
+
+        sub handle_things(Int :$baz) is Path::Map(:foo<bar/:baz>) { ... };
+
+        ...
+
+        use Path::Map;
+
+        Path::Map<foo>.lookup('bar/100').handler; # handle_things
+        Path::Map<foo>.lookup('bar/qux').handler; # Nil
+```
+
 SEE ALSO
 ========
 
