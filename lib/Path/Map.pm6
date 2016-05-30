@@ -256,6 +256,8 @@ value to be transformed during validation:
 
 =begin pod
 
+Calling a C<Path::Map> object directly is equivalent to calling its lookup method.
+
 The two main methods on the C<Path::Map::Match> object are:
 
 =item handler
@@ -300,6 +302,10 @@ C<variables> will be passed to the handler.
 
   multi method AT-KEY(Path::Map:D: Pair $key) {
     %!map{$key.gist};
+  }
+
+  method CALL-ME(Str $path) {
+    self.lookup($path);
   }
 
   multi method AT-KEY(Path::Map:D: $key) {

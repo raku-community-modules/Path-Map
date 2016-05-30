@@ -143,6 +143,8 @@ method lookup(
 
 Returns a `Path::Map::Match` object if the path matches a known template.
 
+Calling a `Path::Map` object directly is equivalent to calling its lookup method.
+
 The two main methods on the `Path::Map::Match` object are:
 
   * handler
