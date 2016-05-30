@@ -53,10 +53,15 @@ particular path.
 class Path::Map { ... }
 
 # Match class for lookup results.
-class Path::Map::Match {
+class Path::Map::Match does Callable {
   has Path::Map $.mapper is required; # The final mapper that produced this match
   has @.values; # Path segment values and leftover segments
   has %.variables; # Variables resolved by the lookup.
+
+  method CALL-ME {
+    $!mapper.target ~~ Callable or die 'handler is not Callable';
+    $!mapper.target.(|%_, |%!variables);
+  }
 
   # Returns the target handler
   method handler {
@@ -258,6 +263,10 @@ The two main methods on the C<Path::Map::Match> object are:
 
 The C<mapper> that matched the path and associated C<values> are also accessible
 as methods of the C<Path::Map::Match> object.
+
+For convenience, You can call a C<Path::Map::Match> object directly if its
+C<handler> implements the C<Callable> role - in which case the matched
+C<variables> will be passed to the handler.
 
 =end pod
 

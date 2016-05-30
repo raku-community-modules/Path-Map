@@ -156,6 +156,8 @@ The two main methods on the `Path::Map::Match` object are:
 
 The `mapper` that matched the path and associated `values` are also accessible as methods of the `Path::Map::Match` object.
 
+For convenience, You can call a `Path::Map::Match` object directly if its `handler` implements the `Callable` role - in which case the matched `variables` will be passed to the handler.
+
 ### method handlers
 
 ```perl6
