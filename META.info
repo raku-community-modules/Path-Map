@@ -1,6 +1,6 @@
 {
   "name"        : "Path::Map",
-  "version"     : "0.1",
+  "version"     : "0.2",
   "description" : "Hash tree based path router",
   "perl"        : "6.c",
   "auth"        : "github:fjwhittle",
