@@ -91,12 +91,18 @@ class Path::Map does Associative {
 
 =head1 METHODS
 
-  #| The constructor.  Takes a list of pairs and adds each via L<#add_handler>
+  #| The constructor.  Takes a list of pairs and adds each via L<#add_handler>.
+  #|   Pairs may be of the form C«$path => $handler» or
+  #|   C«$path => ($handler, *%constraints)»
   method new(Path::Map:U: *@maps) {
     my $obj := Path::Map.bless;
     @maps and do for @maps {
       when Pair {
-        $obj.add_handler(.key, .value);
+	if .value ~~ List {
+	  $obj.add_handler(.key, .value[0], |%(.value[1..*]));
+	} else {
+	  $obj.add_handler(.key, .value);
+	}
       }
     }
 

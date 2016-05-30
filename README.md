@@ -54,7 +54,7 @@ method new(
 ) returns Mu
 ```
 
-The constructor. Takes a list of pairs and adds each via [add_handler](#method-add_handler)
+The constructor. Takes a list of pairs and adds each via [add_handler](#method-add_handler). Pairs may be of the form `$path => $handler` or `$path => ($handler, *%constraints)`
 
 ### method add_handler
 
@@ -122,10 +122,10 @@ Additional named arguments passed to `add_handler` validate the named variables 
 ```perl6
     $map.add_handler('foo/:bar', 'Something even', :bar({ try { +$_ %% 2 } }));
     $map.add_handler('foo/:baz', 'Something odd', :baz({ try { 1 + $_ %% 2 } }));
-```
     $match = $map.lookup('foo/42'); # succeeds first validation; .handler eq 'Something even';
     $match = $map.lookup('foo/21'); # succeeds second validation; .handler eq 'Something odd';
     $match = $map.lookup('foo/seven'); # fails all validation; returns Nil;
+```
 
 Validation blocks can specify their (single) argument as rw to allow the mapped value to be transformed during validation:
 
