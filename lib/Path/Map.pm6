@@ -58,9 +58,9 @@ class Path::Map::Match does Callable {
   has @.values; # Path segment values and leftover segments
   has %.variables; # Variables resolved by the lookup.
 
-  method CALL-ME {
+  method CALL-ME (*@in, *%in) {
     $!mapper.target ~~ Callable or die 'handler is not Callable';
-    $!mapper.target.(|%_, |%!variables);
+    $!mapper.target.(|@in, |@!values[%!variables.elems..*], |%in, |%!variables);
   }
 
   # Returns the target handler
