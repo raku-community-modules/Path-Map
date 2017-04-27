@@ -1,5 +1,6 @@
 {
   "name"        : "Path::Map",
+  "license"     : "Artistic-2.0",
   "version"     : "0.2",
   "description" : "Hash tree based path router",
   "perl"        : "6.c",
