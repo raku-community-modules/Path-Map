@@ -1,4 +1,6 @@
 Revision history for Path::Map
 
 {{$NEXT}}
+
+0.4  2024-12-13T15:01:43+01:00
     - Initial version as a Raku Community module
