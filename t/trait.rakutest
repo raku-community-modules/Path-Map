@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 
 use Path::Map :traits;
@@ -22,3 +20,5 @@ ok $match.handler.(|$match.variables) ~~ '42 bottles of beer', 'Binding with typ
 ok Path::Map<test>('bar/99')() ~~ 'Really 99? Wow', 'Binding with where';
 
 ok Path::Map<test>('baz/3/2')(1, :qux<4>) ~~ @( 1, 2, 3, 4 ), 'Wildcard and unbound parameters';
+
+# vim: expandtab shiftwidth=4

@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 
 use Path::Map;
@@ -14,3 +12,5 @@ $mapper.add_handler('/foo/:baz', 'not the one', :baz({ True }));
 
 ok $mapper.lookup('/foo/42').?handler eq 'the one', 'deterministic resolution order';
 ok $mapper.lookup('/foo/bar').?handler eq 'not the one', 'skip constraint';
+
+# vim: expandtab shiftwidth=4

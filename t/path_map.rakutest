@@ -1,5 +1,3 @@
-use v6;
-
 use Path::Map;
 
 use Test;
@@ -47,3 +45,5 @@ for @misses -> $path {
 }
 
 ok <ABC Date> ~~ $mapper.?handlers.?sort.?list, 'handlers()';
+
+# vim: expandtab shiftwidth=4

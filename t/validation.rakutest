@@ -1,5 +1,3 @@
-use v6;
-
 use Test;
 use Path::Map;
 
@@ -41,3 +39,5 @@ ok $mapper.lookup('foo/hello-wombat').?handler ~~ 'Wildcard',
 $mapper.add_handler('pony/:breed', 'Magical', :breed( -> $breed is rw { $breed = :unicorn«$breed»; }));
 
 ok $mapper.lookup('pony/Newfoundland').variables<breed> ~~ :unicorn<Newfoundland>, 'Pony converted to unicorn.';
+
+# vim: expandtab shiftwidth=4

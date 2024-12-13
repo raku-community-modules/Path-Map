@@ -1,5 +1,3 @@
-use v6;
-
 use Path::Map;
 
 use Test;
@@ -35,3 +33,5 @@ $match = $mapper.lookup('bar');
 ok $match.handler ~~ 'Default', 'Catch-all';
 ok $match.variables ~~ (), '.. has empty variables';
 ok $match.values ~~ <bar>, '.. has correct values';
+
+# vim: expandtab shiftwidth=4

@@ -1,14 +1,25 @@
 {
-  "name"        : "Path::Map",
-  "license"     : "Artistic-2.0",
-  "version"     : "0.3",
-  "description" : "Hash tree based path router",
-  "perl"        : "6.c",
-  "auth"        : "github:fjwhittle",
-  "depends"     : [ ],
-  "test-depends": [ ],
-  "provides"    : {
-    "Path::Map": "lib/Path/Map.pm6"
+  "auth": "zef:raku-community-modules",
+  "authors": [
+    "Francis Whittle"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "map paths to handlers",
+  "license": "Artistic-2.0",
+  "name": "Path::Map",
+  "perl": "6.c",
+  "provides": {
+    "Path::Map": "lib/Path/Map.rakumod"
   },
-  "source-url"  : "git://github.com/fjwhittle/p6-Path-Map.git"
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/Path-Map.git",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.3"
 }
